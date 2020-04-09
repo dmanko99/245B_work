@@ -1,5 +1,1 @@
-This directory contains all my project files.
-
-The experiments folder contains all experimental files.
-
-The analysis folder contains all analysis files.
+This contains a good amount of the work I'll be doing for LINGUIST 245B in the spring of 2020

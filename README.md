@@ -1,1 +1,1 @@
-This contains a good amount of the work I'll be doing for LINGUIST 245B in the spring of 2020
+This contains the work I'll be doing for LINGUIST 245B in the spring of 2020

@@ -28,7 +28,7 @@
 
     <!--CSS-->
     <link href="../_shared/full-projects/jquery-ui/jquery-ui.min.css" rel="stylesheet" type="text/css"/>
-    <link href="../_shared/css/cocolab-style.css" rel="stylesheet" type="text/css"/>
+    <link href="../_shared/css/cocolab-style_css.css" rel="stylesheet" type="text/css"/>
     <link href="css/local-style.css" rel="stylesheet" type="text/css"/>
 
     <!-- experiment file -->
@@ -41,48 +41,52 @@
   <noscript>This task requires JavaScript.</noscript>
 
   <div class="slide" id="i0" >
-    <img src="../_shared/images/cocologo.png" alt="Stanford CoCoLab" id="cocologo"></img>
-    <p id="cocolab">Stanford CoCoLab</p>
-    <p id="instruct-text">Thank you for agreeing to participate in our survey. We are interested in how words are connected to social concepts you will need x minutes to complete this survey and will be paid $y for your participation.</p>
+    <img src="../_shared/images/alps_lab.png" alt="Alps Lab" id="alpslogo" style="width:300"></img>
+    <p id="cocolab">Stanford ALPS Lab</p>
+    <p id="instruct-text">
+      In this study, we are concerned with how words are connected with social concepts. You are going to read a group of sentences. Please rate how likely you think each sentence is to be true. The HIT should take approximately x minutes, and you will be paid $y for your participation. Thank you for agreeing to participate!
+    </p>
     <button id="start_button" type="button">Start Experiment</button>
-    <p id="legal">Legal information: By answering the following questions, you are participating in a study being performed by cognitive scientists in the Stanford Department of Psychology. If you have questions about this research, please contact Erin Bennett at <a href="mailto://erindb@stanford.edu">erindb@stanford.edu</a> or Noah Goodman, at ngoodman@stanford.edu. You must be  at least 18 years old to participate. Your participation in this research is voluntary. You may decline to answer any or all of the following questions. You may decline further participation, at any time, without adverse consequences. Your anonymity is assured; the researchers who have requested your participation will not receive any personal information about you.</p>
+    <p id="instruct-text" align="left"><i><small><small>
+      <strong>LEGAL INFORMATION</strong>:
+      <br>We invite you to participate in a research study on language interpretation and social concepts. You will be reading sentences and judging how likely they are to be true.
+      <br>You will be paid for your participation at the posted rate. There are no risks or benefits of any kind involved in this study.
+      <br>If you have read this form and have decided to participate in this experiment, please understand your participation is voluntary and you have the right to withdraw your consent or discontinue participation at any time without penalty or loss of benefits to which you are otherwise entitled. The alternative is not to participate.  You have the right to refuse to answer particular questions.  The results of this research study may be presented at scientific or professional meetings or published in scientific journals.  Your individual privacy will be maintained in all published and written data resulting from the study.
+      <br><br><strong>CONTACT INFORMATION</strong>:
+      <br>If you have any questions, concerns or complaints about this research, its procedures, risks and benefits, contact the Protocol Director, Meghan Sumner, at (650)-725-9336.
+      <br>If you are not satisfied with how this study is being conducted, or if you have any concerns, complaints, or general questions about the research or your rights as a participant, please contact the Stanford Institutional Review Board (IRB) to speak to someone independent of the research team at (650)-723-2480 or toll free at 1-866-680-2906, or email at IRB2-Manager@lists.stanford.edu.  You can also write to the Stanford IRB, Stanford University, 1705 El Camino Real, Palo Alto, CA 94306 USA.
+      <br>If you agree to participate, please proceed to the study tasks.<br>
+    </small></small></i></p>
   </div>
 
- <div class="slide" id="reqs">
-  <h3>Requirements</h3>
+  <div class="slide" id="reqs">
+    <h3>Requirements</h3>
     <p>You must be an American native speaker of English to participate in this survey. Please check the box below to indicate that you meet this requirement.</p>
     <!-- <form action="">
       <input type="radio" name="american_check" id="american_check" value="check">I delcare that I am an American native speaker of English.
     </form> -->
-  <label><input type="radio"  name="american_check" id="american_check" value="yes"/>I declare that I am an American native speaker of English.</label>
-  <br></br>
-  <button onclick="_s.button()">Continue</button>
-  <br></br>
-  <p class="err" style="color:red"> Please respond to the question.</p>
-  </div>
-
-   <div class="slide" id="irb_info">
-    <p>THIS IS PLACEHOLDER TEXT. PUT IRB FORM HERE.</p>
+    <label><input type="radio"  name="american_check" id="american_check" value="yes"/>I declare that I am an American native speaker of English.</label>
+    <br></br>
     <button onclick="_s.button()">Continue</button>
+    <br></br>
+    <p class="err" style="color:red">Please indicate that you are an American native speaker of English to continue.</p>
   </div>
 
-   <div class="slide" id="instructions">
+ <div class="slide" id="instructions">
     <h3>Instructions</h3>
-    <p>THIS IS PLACEHOLDER TEXT? </p>
     <p> In this study, we are concerned with how words are connected with social concepts. You are going to read sentences about DeShaun and Conner, two American males. Please rate how likely you think each sentence is to be true.
     </p>
     <button onclick="_s.button()">Continue</button>
   </div>
 
   <div class="slide" id="main_task">
-    <p id="reminder"></p>
     <br>
+    <p id="reminder"></p>
     <p class= "prompt">
-      How likely do you think it is that this sentence is true?
+      How likely do you think it is that 
+      <b>the sentence below</b>
+      is true?
       <br>
-      <small><i>
-        Please rate this sentence from 0 - 100 with 0 being not likely at all to be true <br> and 100 meaning extremely likely to be true:
-      </i></small>
     </p>
     <strong><big><p id="output"></p></big></strong>
     <table id="slider_table" class="slider_table" align = "center">
@@ -100,6 +104,11 @@
         <td colspan="3"><div id="single_slider" class="slider"></div></td>
       </tr>
     </table>
+    <br></br>
+    <small><i>
+        Please rate the sentence above from 0 - 100 with 0 being not likely at all to be true <br> and 100 meaning extremely likely to be true.
+      </i></small>
+    <br></br>
     <button onclick="_s.button()">Continue</button>
     <br></br>
     <p class="err" style="color:red">Please adjust the slider before continuing.</div>
@@ -174,7 +183,7 @@
   </div>
 
   <div id="thanks" class="slide js" >
-    <p  class="big">Thanks for your Time!</p>
+    <p  class="big">Thanks for your time!</p>
   </div>
 
   <div class="progress">

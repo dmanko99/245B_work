@@ -185,13 +185,8 @@ function init() {
   exp.structure=[
     "i0", 
     "reqs",
-    "irb_info",
     "instructions",
     "main_task",
-    // "single_trial",
-    // "one_slider",
-    // "multi_slider",
-    // "vertical_sliders",
     "subj_info",
     "thanks"
   ];

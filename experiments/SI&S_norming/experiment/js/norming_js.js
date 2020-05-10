@@ -86,7 +86,7 @@ function make_slides(f) {
 
         /* use _stream.apply(this); if and only if there is
         "present" data. (and only *after* responses are logged) */
-        //_stream.apply(this);
+        _stream.apply(this);
       }
     },
 

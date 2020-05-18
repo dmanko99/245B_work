@@ -19,10 +19,10 @@ var scales = [
 	{weak: "some", strong: "all"},
 	{weak: "looks like", strong: "is"},
 	{weak: "possible", strong: "certain"},
-	{weak: "may", strong: "will"},
+	//{weak: "may", strong: "will"},
 	{weak: "three", strong: "more than three"}
 ]
-
+ 
 // var stories = [
 // 	{
 // 		story: "or/and stealing",

@@ -1,6 +1,58 @@
 function make_slides(f) {
   var   slides = {};
 
+  slides.bot = slide({
+    name : "bot",
+    start: function() {
+      $('.err1').hide();
+      $('.err2').hide();
+      $('.disq').hide();
+      exp.speaker = _.shuffle(["James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph", "Thomas", "Charles"])[0];
+      exp.listener = _.shuffle(["Mary", "Patricia", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica", "Sarah", "Margaret"])[0];
+      exp.lives = 0;
+      var story = exp.speaker + ' says to ' + exp.listener + ': "It\'s a beautiful day, isn\'t it?"'
+      var question = 'Who does ' + exp.speaker + ' talk to?';
+      document.getElementById("s").innerHTML = story;
+      document.getElementById("q").innerHTML = question;
+    },
+    button : function() {
+      exp.text_input = document.getElementById("text_box").value;
+      var lower = exp.listener.toLowerCase();
+      var upper = exp.listener.toUpperCase();
+
+      if ((exp.lives < 3) && ((exp.text_input == exp.listener)|(exp.text_input == lower) | (exp.text_input== upper))){
+        exp.data_trials.push({
+          "slide_number": exp.phase,
+          "slide_type" : "bot_check",
+          "image" : exp.listener,
+          "audio" : "",
+          "response" : [0,exp.text_input]
+        });
+        exp.go();
+      }
+      else {
+        exp.data_trials.push({
+          "slide_number": exp.phase,
+          "slide_type" : "bot_check",
+          "image" : exp.listener,
+          "audio" : "",
+          "response" : [0,exp.text_input]
+        });
+        if (exp.lives == 0){
+          $('.err1').show();
+        }if (exp.lives == 1){
+          $('.err1').hide();
+          $('.err2').show();
+        }if (exp.lives == 2){
+          $('.err2').hide();
+          $('.disq').show();
+          $('.button').hide();
+        }
+        exp.lives++;
+      } 
+    },
+  });
+
   slides.i0 = slide({
      name : "i0",
      start: function() {
@@ -207,6 +259,7 @@ function init() {
 
   //blocks of the experiment:
   exp.structure=[
+    "bot",
     "i0", 
     "reqs",
     "instructions",

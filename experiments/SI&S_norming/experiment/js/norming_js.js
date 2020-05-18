@@ -69,7 +69,11 @@ function make_slides(f) {
       var story = replaceTerms(this.stim, "storyline")
 
       //display story-dependent fields
-      document.getElementById('reminder').innerHTML = reminder + " is an American male.";
+      if(stim.stimType != "exclusion") {
+        document.getElementById('reminder').innerHTML = reminder + " is an American male.";
+      } else {
+        document.getElementById('reminder').innerHTML = "";
+      }
       document.getElementById('output').innerHTML = story;
 
       this.init_sliders();
@@ -103,7 +107,9 @@ function make_slides(f) {
         "first": this.stim.first,
         "story": this.stim.story,
         "scale": scales[this.stim.scaleType],
-        "+/-": this.stim.tag,
+        "tag": this.stim.tag,
+        "list" : exp.currentList,
+        "type" : this.stim.stimType
       });
     }
   });
@@ -151,11 +157,26 @@ function init() {
   exp.trials = [];
   exp.catch_trials = [];
 
-  exp.nTrials = 10;
+  // actually there are 24 trials, but 20 require FIRST-replacement
+  exp.nTrials = 20;
 
   exp.stims = [];
   //var labels = _.shuffle(predicates);
   //var 
+
+  // determine what list to serve to participant
+  exp.currentList = _.shuffle([1,2,3])[0]
+
+  // filter criticals by list
+  var listCriticals = criticals.filter(function (stim) {
+  return stim.list == exp.currentList
+  });
+
+  // stories are the critical items for the list, plus fillers
+  // vacuous call to filter just converts json to javascript object
+  var stories = listCriticals.concat(fillers.filter(function() { return true } ))
+
+  exp.stories = stories
 
   for (var i=0; i<exp.nTrials; i++) {
     var f;
@@ -168,8 +189,11 @@ function init() {
     )
   };
 
+  // add exclusion stims
+  exp.stims = exp.stims.concat(exclusions.filter(function() { return true } ))
 
   exp.stims = _.shuffle(exp.stims);
+
   exp.stimscopy = exp.stims.slice(0);
 
   exp.system = {

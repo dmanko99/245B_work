@@ -17,6 +17,7 @@
 *.Rhistory
 *.DS_Store*
 *catch_trials.csv
+*data/initial_pilot.csv
 *subject_information.csv
 *system.csv
 *trials.csv

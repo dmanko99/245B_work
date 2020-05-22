@@ -18,9 +18,8 @@ function make_slides(f) {
     button : function() {
       exp.text_input = document.getElementById("text_box").value;
       var lower = exp.listener.toLowerCase();
-      var upper = exp.listener.toUpperCase();
 
-      if ((exp.lives < 3) && ((exp.text_input == exp.listener)|(exp.text_input == lower) | (exp.text_input== upper))){
+      if ((exp.lives < 3) && ((exp.text_input.toLowerCase() == lower))){
         exp.data_trials.push({
           "slide_number": exp.phase,
           "slide_type" : "bot_check",
@@ -49,7 +48,7 @@ function make_slides(f) {
           $('.button').hide();
         }
         exp.lives++;
-      } 
+      }   
     },
   });
 
@@ -60,27 +59,27 @@ function make_slides(f) {
      }
   });
 
-  slides.reqs = slide({
-    name : "reqs",
-    start: function() {
-      $(".err").hide();
-    },
-    button : function() {
-      if (document.getElementById("american_check").checked == false) {
-      //if ($('input[name="american_check"]:checked').val() == undefined) {
-        $(".err").show();
-      } else {
-      exp.go(); //make sure this is at the *end*, after you log your data
-      }
-    }
-  });
+  // slides.reqs = slide({
+  //   name : "reqs",
+  //   start: function() {
+  //     $(".err").hide();
+  //   },
+  //   button : function() {
+  //     if (document.getElementById("american_check").checked == false) {
+  //     //if ($('input[name="american_check"]:checked').val() == undefined) {
+  //       $(".err").show();
+  //     } else {
+  //     exp.go(); //make sure this is at the *end*, after you log your data
+  //     }
+  //   }
+  // });
 
-  slides.irb_info = slide({
-     name : "irb_info",
-     button: function() {
-      exp.go();
-     }
-  });
+  // slides.irb_info = slide({
+  //    name : "irb_info",
+  //    button: function() {
+  //     exp.go();
+  //    }
+  // });
 
   slides.instructions = slide({
     name : "instructions",
@@ -122,7 +121,7 @@ function make_slides(f) {
 
       //display story-dependent fields
       if(stim.stimType != "exclusion") {
-        document.getElementById('reminder').innerHTML = reminder + " is an American male.";
+        document.getElementById('reminder').innerHTML = reminder + " is an American man.";
       } else {
         document.getElementById('reminder').innerHTML = "";
       }
@@ -170,6 +169,15 @@ function make_slides(f) {
     name : "subj_info",
     submit : function(e){
       //if (e.preventDefault) e.preventDefault(); // I don't know what this means.
+      var raceData = new Array();
+      var raceQs = document.getElementById("checkboxes");
+      var chks = raceQs.getElementsByTagName("INPUT");
+      for (var i = 0; i < chks.length; i++) {
+        if (chks[i].checked) {
+          raceData.push(chks[i].value);
+        }
+      };
+
       exp.subj_data = {
         language : $("#language").val(),
         enjoyment : $("#enjoyment").val(),
@@ -177,7 +185,8 @@ function make_slides(f) {
         age : $("#age").val(),
         gender : $("#gender").val(),
         education : $("#education").val(),
-        affiliation : $("affiliation").val(),
+        affiliation : $("#affiliation").val(),
+        race : raceData.join(", "),
         comments : $("#comments").val(),
         problems: $("#problems").val(),
         fairprice: $("#fairprice").val()
@@ -261,7 +270,7 @@ function init() {
   exp.structure=[
     "bot",
     "i0", 
-    "reqs",
+    // "reqs",
     "instructions",
     "main_task",
     "subj_info",

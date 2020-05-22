@@ -56,22 +56,30 @@
       <p id="s"></p>
       <p id="q"></p>
       <input type="text" id="text_box"/></question>
-      <br><br><br>
+      <br><br>
         <div class="err1">
-          <p2>Failing this question two more times will disqualify you from this study.</p2></div>
+          <p2 style="color:red">Failing this question two more times will disqualify you from this study.</p2></div>
         <div class="err2">
-          <p2>Failing this question one more time will disqualify you from this study.</p2></div>
+          <p2 style="color:red">Failing this question one more time will disqualify you from this study.</p2></div>
         <div class="disq">
-          <p2>You failed the question and you are disqualified.</p2></div>
+          <p2 style="color:red">You failed the question and you are disqualified.</p2></div>
+        <br>
         <div class="button">
-          <button onclick="_s.button()">Continue</button></div>
+          <button id="contbutton" onclick="_s.button()">Continue</button></div>
+        <script>  
+          $("#text_box").keypress(function(event) {
+            if (event.keyCode === 13) {
+              $("#contbutton").click();
+            }
+          });
+        </script>
     </div>    
 
   <div class="slide" id="i0" >
     <img src="shared/images/alps_lab.png" alt="Alps Lab" id="alpslogo" style="width:300"></img>
     <p id="cocolab">Stanford ALPS Lab</p>
     <p id="instruct-text">
-      In this study, we are concerned with how words are connected with social concepts. You will read a series of sentences. Please rate how likely you think it is that each sentence is true. The HIT should take approximately 7 minutes, and you will be paid $1.30 for your participation. Thank you for agreeing to participate!
+      In this study, we are concerned with how words are connected with social concepts. You will read a series of sentences. Please rate how likely you think it is that each sentence is true. The HIT should take approximately 7 minutes, and you will be paid $1.25 for your participation. Thank you for agreeing to participate!
     </p>
     <button id="start_button" type="button">Start Experiment</button>
     <p id="instruct-text" align="left"><i><small><small>
@@ -86,27 +94,23 @@
     </small></small></i></p>
   </div>
 
-  <div class="slide" id="reqs">
+ <!--  <div class="slide" id="reqs">
     <h3>Requirements</h3>
     <p>You must be an American native speaker of English to participate in this survey. Please check the box below to indicate that you meet this requirement.</p>
-    <!-- <form action="">
-      <input type="radio" name="american_check" id="american_check" value="check">I delcare that I am an American native speaker of English.
-    </form> -->
     <label><input type="radio"  name="american_check" id="american_check" value="yes"/> I declare that I am an American native speaker of English.</label>
     <br></br>
     <button onclick="_s.button()">Continue</button>
     <br></br>
     <p class="err" style="color:red">Please indicate that you are an American native speaker of English to continue.</p>
-  </div>
+  </div> -->
 
  <div class="slide" id="instructions">
     <h3>Instructions</h3>
-    <p style="text-align:left"> In this study, we are concerned with how words are connected with social concepts. You will read sentences about DeShaun and Conner, two American males. </p>
+    <p style="text-align:left"> In this study, you will read sentences about American men and rate how likely it is that sentences about them are true.</p>
 
-    <p style="text-align:left"> Each frame contains one sentence about either DeShaun or Conner. Using the slider bar below the sentence, please rate how likely you think it is that the sentence is true. The slider allows you to answer on a scale of 0 to 100, with 0 indicating <i>not at all likely</i> to be true and 100 indicating <i>extremely likely</i>. 
-    </p>
+    <p style="text-align:left"> Indicate your rating by dragging a slider bar. The slider allows you to answer on a scale of 0 to 100, with 0 indicating not at all likely to be true and 100 indicating extremely likely.
 
-    <p style="text-align:left"> IMPORTANT: Occasionally you'll be asked to provide ratings for simple math problems using the slider bar. We use these questions as attention checks: for example, if the math problem is "2 + 2 = 4", your answer on the slider bar needs to be closer to <i>extremely likely</i> than to <i>not at all likely</i>. Answering these questions incorrectly can negatively affect your compensation.</p>
+    <p style="text-align:left"> IMPORTANT: Occasionally you'll be asked to provide ratings for simple math problems. If you pay attention, you'll be sure to get these right (for example, if the math problem is "1 + 1 = 2", your answer on the slider bar needs to be closer to "extremely likely" than to "not at all likely").</p>
 
 
     <button onclick="_s.button()">Continue</button>
@@ -116,9 +120,7 @@
     <br>
     <p id="reminder"></p>
     <p class= "prompt">
-      How likely do you think it is that 
-      <b>the sentence below</b>
-      is true?
+      How likely do you think it is that the statement below is true?
       <br>
     </p>
     <strong><big><p id="output"></p></big></strong>
@@ -139,7 +141,7 @@
     </table>
     <br></br>
     <small><i>
-        Please rate the sentence above from 0 - 100 with 0 being not likely at all to be true <br> and 100 meaning extremely likely to be true.
+        Please rate the statement above from 0 - 100 with 0 being not likely at all to be true <br> and 100 meaning extremely likely to be true.
       </i></small>
     <br></br>
     <button onclick="_s.button()">Continue</button>
@@ -151,6 +153,10 @@
     <div class="long_form">
       <div class="subj_info_title">Additional information</div>
       <p class="info">Answering these questions is optional, but will help us understand your answers.</p>
+      
+      <p>Native Language: <input type="text" id="language"/></p>
+      <label>(the language(s) spoken at home when you were a child)</label>
+
       <p>Did you read the instructions and do you think you did the HIT correctly?</p>
       <label><input type="radio"  name="assess" value="No"/>No</label>
       <label><input type="radio"  name="assess" value="Yes"/>Yes</label>
@@ -173,6 +179,23 @@
 
       <p>Age: <input type="text" id="age"/></p>
 
+      <div id="checkboxes">
+        <p>What is your Race/Ethnicity? Select all that apply:</p>
+        <ul style="list-style-type:none;" style="display: inline-block;" align="center">  
+          <li><label><input name="raceX" type="checkbox" id="Asian"  
+            value="Asian"/>Asian</label></li>
+          <li><label><input name="raceX" type="checkbox" id="AA" value="AA"/> 
+            Black or African American</label></li>
+          <li><label><input name="raceX" type="checkbox" id="Latino" value="Latino"/>
+            Hispanic or Latino</label></li>
+          <li><label><input name="raceX" type="checkbox" id="PI" value="PI"/>
+            Native Hawaiian or Other Pacific Islander </label></li>
+          <li><label><input name="raceX" type="checkbox" id="White" value="White"/>
+            White</label></li>
+        </ul>
+      </div>
+
+      <br><br><br>
       <p>Level Of Education:
         <select id="education">
           <label><option value="-1"/></label>
@@ -196,9 +219,6 @@
           <label><option value="6"/>Conservative Republican</label>
         <select>
       </p>
-
-      <p>Native Language: <input type="text" id="language"/></p>
-      <label>(the language(s) spoken at home when you were a child)</label>
 
       <p>Did you enjoy the hit?</p>
       <select id="enjoyment">

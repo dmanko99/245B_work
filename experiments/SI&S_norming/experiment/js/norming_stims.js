@@ -1,11 +1,9 @@
 
 var firsts = [
-    "DeShaun", "DeShaun", "DeShaun", "Andre", "Andre", 
-    "Andre", "Marquis", "Marquis", "Marquis", "Terrell",
-    "Terrell", "Terrell",
-    "Connor", "Connor", "Connor", "Cody", "Cody",
-    "Cody", "Jake", "Jake", "Jake", "Tanner",
-    "Tanner", "Tanner",
+    "DeShaun", "DeShaun", "DeShaun", "DeShaun", "DeShaun", "DeShaun",
+    "Marquis", "Marquis", "Marquis", "Marquis", "Marquis", "Marquis",
+    "Connor", "Connor", "Connor", "Connor", "Connor", "Connor",
+    "Cody", "Cody", "Cody", "Cody", "Cody", "Cody"
 ]
 
 var criticals = [

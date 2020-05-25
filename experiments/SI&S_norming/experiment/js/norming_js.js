@@ -250,6 +250,8 @@ function init() {
     )
   };
 
+      
+
   // add exclusion stims
   exp.stims = exp.stims.concat(exclusions.filter(function() { return true } ))
 

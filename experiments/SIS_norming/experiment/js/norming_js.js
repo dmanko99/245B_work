@@ -242,7 +242,7 @@ function init() {
   for (var i=0; i<exp.nTrials; i++) {
     var f;
     f = {
-      first: _.shuffle(firsts)[i],
+      first: firsts[i],
       //scale: _.shuffle(scales)[i]
     }
     exp.stims.push(

@@ -1,10 +1,37 @@
 
-var firsts = [
-    "DeShaun", "DeShaun", "DeShaun", "DeShaun", "DeShaun", "DeShaun",
-    "Marquis", "Marquis", "Marquis", "Marquis", "Marquis", "Marquis",
-    "Connor", "Connor", "Connor", "Connor", "Connor", "Connor",
-    "Cody", "Cody", "Cody", "Cody", "Cody", "Cody"
-]
+var wnames = ["Peter",
+"Brad",
+"Ethan",
+"Ian",
+"Cody",
+"Brett",
+"Paul",
+"Connor",
+"Jack",
+"Logan",
+"Roger",
+"Dylan",
+"Hunter",
+"Dustin",
+"Ryan"]
+
+var bnames = ["Trevon",
+"Tyree",
+"Deion",
+"Marquis",
+"Jermaine",
+"Lamont",
+"Tyrone",
+"Deandre",
+"Tremayne",
+"Lamar",
+"Kareem",
+"Hakeem",
+"Jamal",
+"Rasheed",
+"Deshawn"]
+
+var firsts = _.shuffle(_.sample(wnames, 10).concat(_.sample(bnames, 10)))
 
 var criticals = [
 	{
@@ -135,7 +162,7 @@ var criticals = [
 		"list":2
 	},{
 		"story":"possible/certain jail",
-		"storyline":"\nFIRST has spent time in prison.",
+		"storyline":"FIRST has spent time in prison.",
 		"tag":"evoke",
 		"scaleType":3,
 		"stimType":"critical",
@@ -328,7 +355,6 @@ var scales = [
 	{weak: "some", strong: "all"},
 	{weak: "looks like", strong: "is"},
 	{weak: "possible", strong: "certain"},
-	{weak: "may", strong: "will"},
 	{weak: "three", strong: "more than three"}
 ]
 

@@ -1,0 +1,525 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyr)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(data.table)
+theme_set(theme_bw())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))    
+d = read.csv("ling245B/Manko245B_Project/analysis/01_experiment/data/SIS-trials.csv", header = TRUE)
+sinfo = read.csv("ling245B/Manko245B_Project/analysis/01_experiment/data/SIS-subject_information.csv", header = TRUE)
+```
+
+
+```{r}
+subinfo <-sinfo
+subinfo <- subinfo %>%
+  filter(!(workerid %in% blacklist))
+```
+
+
+```{r}
+ggplot(subinfo, aes(x=race)) + geom_bar()
+```
+
+df with race encoded
+```{r}
+whitenames = list("Peter", "Brad", "Ethan", "Ian", "Cody", "Brett", "Paul", "Connor", "Jack", "Logan", "Roger", "Dylan", "Hunter", "Dustin","Ryan")
+blacknames = list("Trevon", "Tyree", "Deion", "Marquis", "Jermaine", "Lamont", "Tyrone", "Deandre", "Tremayne", "Lamar", "Kareem", "Hakeem", "Jamal", "Rasheed", "Deshawn")
+d  <-  mutate(d, stimRace = ifelse(first %in% whitenames, "White",
+                                     ifelse( first %in% blacknames, "Black",
+                                             "None")))
+d <- d %>% select(-audio, -image, -slide_number, -slide_type, -Answer.condition)
+d <- d %>% drop_na(trial_num)
+```
+
+reformatting some data?
+```{r}
+d$response <-  as.numeric(as.character(d$response))
+```
+
+creating important dataframes that are useful
+```{r}
+df.critical <- filter(d, type == "critical")
+df.criticalW <- filter(df.critical, stimRace == "White")
+df.criticalB <- filter(df.critical, stimRace == "Black")
+```
+
+
+
+starting to visualize some things…
+
+looking at average responses by race/mean rating
+```{r}
+ERmeans <- aggregate(response ~ tag, d, mean)
+ERmeans
+```
+
+
+start with average responses by race/mean rating by evoke or suppress criminality
+```{r}
+ERbyrace <- ggplot(ERmeans, aes(x = tag, y = response)) +
+  geom_bar(stat = "identity", position =) +
+  xlab("Race") +
+  ylab("Mean Rating")
+ERbyrace
+
+raceER <- ggplot(d, aes(x=tag, y=mean(response), fill=stimRace)) +
+  geom_col(stat = "identity", position = "dodge")
+raceER
+```
+
+```{r}
+nameMeans <- aggregate(response ~ name, df, mean)
+nameMeans <- nameMeans[-1,]
+nameMeans <- mutate(nameMeans, race = ifelse(name %in% whitenames, "White", "Black"))
+nameMeans <-  arrange(nameMeans, race)
+
+ggplot(nameMeans, aes(x = name, y = response, fill = race)) + 
+  geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+```
+
+
+trying more things
+```{r}
+evokedf <- filter(d, tag == "evoke")
+repressdf <- filter(d, tag == "repress")
+
+nameMeans1 <- aggregate(response ~ first, evokedf, mean)
+nameMeans1 <- mutate(nameMeans1, race = ifelse(first %in% whitenames, "White", "Black"))
+nameMeans1 <- arrange(nameMeans1, race)
+
+nameMeans2 <- aggregate(response ~ first, repressdf, mean)
+nameMeans2 <- mutate(nameMeans2, race = ifelse(first %in% whitenames, "White", "Black"))
+nameMeans2 <- arrange(nameMeans2, race)
+
+
+nM <- cbind(as.character(nameMeans1$first), nameMeans1$response, nameMeans2$response, nameMeans1$race)
+
+nM1 <- tibble(as.character(nameMeans1$first),
+              nameMeans1$response,
+              nameMeans2$response,
+              nameMeans1$race)
+colnames(nM1) <- c("first", "evokeMean", "repressMean", "race")
+```
+
+visualize data by specific name
+```{r}
+nameDataE <- ggplot(nM1, aes(x=first, y=evokeMean, color = race)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+
+nameDataR <- ggplot(nM1, aes(x=first, y=repressMean, color = race)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+
+nameDataE
+nameDataR
+```
+
+
+visualize by story data
+```{r}
+storyMeansE <- aggregate(response ~ story, evokedf, mean)
+storyMeansE <- mutate(storyMeansE, race = ifelse(first %in% whitenames, "White", "Black"))
+
+storyMeansR <- aggregate(response ~ story, repressdf, mean)
+storyMeansR <- mutate(storyMeansR, race = ifelse(first %in% whitenames, "White", "Black"))
+
+sM <- tibble(as.character(storyMeansR$story),
+              storyMeansE$response,
+              storyMeansR$response,
+              storyMeansR$race)
+
+colnames(sM) <- c("story", "evokeMean", "repressMean")
+
+ggplot(sM, aes(x = story, y = evokeMean)) + geom_bar(stat="identity") +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+ggplot(sM, aes(x = story, y = repressMean)) + geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+
+ggplot(sM, aes(x=story, y = repressMean - evokeMean)) + geom_bar (stat = "identity") +
+  theme(axis.text.x = element_text(angle = 80, hjust = 1))
+```
+
+Basic visualization plot
+```{r}
+bPlot <- ggplot(byStereotypeNameCategory, aes(x=nameCategory, y=Mean, fill = stereotype)) +
+  # facet_wrap(~kind, scales = "free") +
+  theme_bw() +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=20,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +  
+  scale_fill_manual("Item effect on\ncriminality stereotype", values = c("#00397A","#CCCCCC")) +
+  labs(x = "Race", y = "Mean rating", fill = "Stereotype")  +
+  scale_x_discrete(labels = c("White", "Black")) +
+  ggtitle("Mean responses for White- and Black-normed names")
+
+bPlot
+```
+
+
+#Looking at plots for the presentation and final paper
+looking at variation in response by self-reported political beliefs
+```{r}
+#Faceting by political means
+##adding political beliefs to dataframe
+affiliationList <- rep(subinfo$affiliation, each = 24)
+dfAffiliation <- cbind(df, affiliationList) 
+dfAffiliation <- dfAffiliation %>% rename(affiliation = affiliationList)
+dfAffiliation <- mutate(dfAffiliation, affiliationBin = ifelse(affiliation %in% 0:2, "Democrat",
+                                                      ifelse(affiliation == 3, "Independent",
+                                                      ifelse(affiliation %in% 4:6, "Republican",
+                                                      "Unreported"))))
+
+affiliationLabs <- c("No answer given", "Liberal Democrat\n(most liberal)", "Democratic-leaning Independent", "Moderate Democrat", "Independent\n(most central)", "Moderate Republican", "Republican-leaning Independent", "Conservative Republican\n(most conservative)")
+affiliationLabsSimple <- c("No answer given", "Most liberal", "", "", "Most central", "", "", "Most conservative")
+affiliationBinLabs <- c("Democrat","Independent","Republican", "Unreported")
+
+##getting the numbers
+byAffiliation <- dfAffiliation %>% 
+  filter(type == "critical") %>%
+  group_by(nameCategory, stereotype, affiliation) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+
+byAffiliationBin <- dfAffiliation %>% 
+  filter(type == "critical") %>%
+  group_by(nameCategory, stereotype, affiliationBin) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+
+byAffiliationStory <- dfAffiliation %>%
+  filter(type == "critical") %>%
+  group_by(nameCategory, stereotype, item, affiliation) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+```
+
+```{r}
+#Means plots collapsing across item
+affiliationPlotByItem <- ggplot(byAffiliationStory, aes(x=factor(affiliation), y=Mean, fill = nameCategory)) +
+  theme_bw() +
+  #scale_fill_grey() +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=70,hjust=1,vjust=1)) +
+  ggtitle("Mean response on different items by subjects' self-reported political beliefs") +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +
+  labs(x = "Political Affiliation", y = "Mean rating", fill = "Stereotype")  +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  facet_wrap(~item) +
+  scale_x_discrete(labels = affiliationLabsSimple)
+  #scale_x_discrete(labels = affiliationLabs)
+
+affiliationPlotByItem
+```
+
+```{r}
+#Means plots not collapsing across item
+affiliationPlot <- ggplot(byAffiliation, aes(x=factor(affiliation), y=Mean, fill = nameCategory)) +
+  facet_wrap(~stereotype, scales = "free") +
+  theme_bw() +
+  #scale_fill_grey() +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=70,hjust=1,vjust=1)) +
+  ggtitle("Mean response by subjects' self-reported political beliefs") +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +
+  labs(x = "Political Affiliation", y = "Mean rating", fill = "Stereotype")  +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  scale_x_discrete(labels = affiliationLabsSimple) +
+  ylim(0, 70)
+  #scale_x_discrete(labels = affiliationLabs)
+
+affiliationPlot
+```
+
+```{r}
+#revised affiliation bin plot
+byAffiliationBin$facet = factor(byAffiliationBin$affiliationBin, 
+                                levels = c("Democrat", "Republican",
+                                           "Independent","Unreported"))
+#                               levels = c("Democrat (n=65)", "Republican (n=38)",
+#                                           "Independent (n=21)","Unreported (n=1)"))
+
+
+affiliationBinPlot <- ggplot(byAffiliationBin, aes(x=nameCategory, y=Mean, fill = stereotype)) +
+  facet_wrap(~facet, scales = "free") +
+  theme_bw() +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=20,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +  
+  scale_fill_manual("Item effect on\ncriminality stereotype",
+                    values = c("#00397A","#CCCCCC")) +
+  labs(x = "Stimulus Race", y = "Mean Response", fill = "Stereotype")  +
+  scale_x_discrete(labels = c("White", "Black")) +
+  ylim(0, 63) +
+  ggtitle("Mean response by subjects' self-reported political beliefs")
+affiliationBinPlot
+
+```
+
+
+subsetting off just the white speakers (who are vastly over-represented in the data, unsurprisingly) by facetting by reported race
+```{r}
+#Labels
+raceLabs <- c("Unreported", "African American", "African American & White", "Asian", "Asian & African American", "Asian & White", "Latino/a/x", "Latino/a/x & White", "White")
+names(raceLabs) <- c("", "AA", "AA, White", "Asian", "Asian, AA", "Asian, White", "Latino", "Latino, White", "White")
+
+#Faceting by race for overall means
+subRaceList <- rep(subinfo$race, each = 24)
+dfSubRace <- cbind(df, subRaceList) 
+dfSubRace <- dfSubRace %>% rename(subjectRace = subRaceList)
+
+dfSubRace <- mutate(dfSubRace, raceBin = ifelse(subjectRace == "Asian", "Asian",
+                                         ifelse(subjectRace == "Asian, White", "Asian Biracial",
+                                         ifelse(subjectRace == "AA", "African American",
+                                         ifelse(subjectRace %in% c("AA, White", "Asian, AA"),
+                                                "African American Biracial",
+                                         ifelse(subjectRace == "Latino", "Latino/a/x",
+                                         ifelse(subjectRace == "Latino, White", "Latino/a/x Biracial",
+                                         ifelse(subjectRace == "White", "White",
+                                                "Unreported"))))))))
+
+#New dataframe
+bySubRace <- dfSubRace %>%
+  filter(type == "critical") %>%
+  group_by(nameCategory, stereotype, subjectRace, raceBin) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+```
+
+```{r}
+#Graphing
+subRacePlot <- ggplot(bySubRace, aes(x=nameCategory, y=Mean, fill = stereotype)) +
+  #facet_wrap(~subjectRace, scale = "free", labeller = labeller(subjectRace = raceLabs)) +
+  facet_wrap(~subjectRace, scale = "free") +
+  theme_bw() +
+  #scale_fill_grey() +
+  scale_fill_manual("Item effect on\ncriminality\nstereotype", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  #theme(axis.text.x=element_text(angle=0,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +
+  labs(x = "Stimulus Race", y = "Mean rating", fill = "Subject Race")+
+  ggtitle("Mean responses by subject's self-reported race")
+
+subRacePlot
+```
+
+```{r}
+binFacets <- c("African American (n=8)", "African American Biracial (n=3)",
+                           "Asian (n=7)", "Asian Biracial (n=1)", "Latino/a/x (n=8)",
+                           "Latino/a/x Biracial (n=4)", "Unreported (n=1)", "White (n=93)")
+```
+
+```{r}
+#binned plot
+subRaceBinPlot <- ggplot(bySubRace, aes(x=nameCategory, y=Mean, fill = stereotype)) +
+  facet_wrap(~ raceBin, labeller = labeller(binFacets)) +
+  #facet_wrap(~raceBin, scale = "free") +
+  theme_bw() +
+  #scale_fill_grey() +
+  scale_fill_manual("Item effect on\ncriminality\nstereotype", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  #theme(axis.text.x=element_text(angle=0,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +
+  #labs(x = "Stimulus Race", y = "Mean rating", fill = "Subject Race")+
+  labs(x = "Stimulus Race", y = "Mean rating")+
+  ylim(0, 85) +
+  ggtitle("Mean responses by subject's self-reported race")
+
+subRaceBinPlot
+```
+
+
+looking at the by-worker patterns of response
+```{r}
+byworkerPlot <- ggplot(byStereotypeNameCategoryWorker, aes(x=nameCategory, y=Mean, fill = stereotype)) +
+  facet_wrap(~workerid) +
+  theme_bw() +
+  #scale_fill_grey() +
+  scale_fill_manual("Item effect on\ncriminality\nstereotype", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=20,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +  
+  labs(x = "Race", y = "Mean rating", fill = "Stereotype")+
+  ggtitle("Mean response by individual participant")
+
+byworkerPlot
+```
+
+
+visualizations of the by-item variability
+```{r}
+byStereotypeNameCategoryStory <- df %>%
+  filter(type == "critical") %>%
+  group_by(nameCategory, stereotype, item) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+```
+
+```{r}
+#Repress condition
+itemMeansR <- ggplot(filter(byStereotypeNameCategoryStory, stereotype == "repress"), aes(x=item, y=Mean, fill = nameCategory)) +
+  geom_hline(yintercept = mean(filter(byStereotypeNameCategoryStory, stereotype == "repress")$Mean), color="gray") +
+  theme_bw() +
+  #scale_fill_grey() +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=70,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +  
+  ylim(0, 85) +
+  labs(x = "Presented story", y = "Mean rating", fill = "Race")+
+  ggtitle("Average response by items repressing criminality stereotype")
+
+itemMeansR
+```
+
+```{r}
+#Evoke condition
+itemMeansE <- ggplot(filter(byStereotypeNameCategoryStory, stereotype == "evoke"), aes(x=item, y=Mean, fill = nameCategory)) +
+  geom_hline(yintercept = mean(filter(byStereotypeNameCategoryStory, stereotype == "evoke")$Mean), color="gray") +
+  theme_bw() +
+  #scale_fill_grey() +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=70,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) + 
+  ylim(0, 85) +
+  labs(x = "Presented story", y = "Mean rating", fill = "Race")+
+  ggtitle("Average response by items evoking criminality stereotype")
+
+itemMeansE
+
+```
+
+
+ordering effects: whether/how responses differ between the first and second half of the study
+overall plot of means and facet by first vs second half, that should be enough to see visually whether there's any order effect
+```{r}
+dfOrder <- mutate(df, orderHalf = ifelse(trial_num < 12, "First Half", "Second Half"))
+
+byStereotypeNameCategoryOrder <- dfOrder %>%
+  filter(type == "critical") %>%
+  group_by(nameCategory, stereotype, orderHalf) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+
+ordering <- ggplot(byStereotypeNameCategoryOrder, aes(x=nameCategory, y=Mean, fill = stereotype)) +
+  # facet_wrap(~kind, scales = "free") +
+  theme_bw() +
+  #scale_fill_grey() +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  facet_wrap(~orderHalf) +
+  theme(axis.text.x=element_text(angle=20,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +  
+  labs(x = "Race", y = "Mean rating", fill = "Stereotype") +
+  ggtitle("Response means by order in the experiment")
+
+ordering
+```
+
+histograms of workers
+```{r}
+#subject race
+raceHist <- ggplot(subinfo, aes(x = race)) +
+  geom_histogram(stat = "count", color = "#CCCCCC", fill = "#CCCCCC") +
+  scale_x_discrete(labels = raceLabs) +
+  theme_bw() +
+  labs(x = "Race", y = "Frequency") +
+  theme(axis.text.x=element_text(angle=30,hjust=1,vjust=1)) +
+  ggtitle("Frequency of subjects' self-reported race")
+
+sinfoRaceBin <- mutate(subinfo, raceBin = ifelse(race == "Asian", "Asian",
+                                         ifelse(race == "Asian, White", "Asian Biracial",
+                                         ifelse(race == "AA", "African American",
+                                         ifelse(race %in% c("AA, White", "Asian, AA"),
+                                                "African American Biracial",
+                                         ifelse(race == "Latino", "Latino/a/x",
+                                         ifelse(race == "Latino, White", "Latino/a/x Biracial",
+                                         ifelse(race == "White", "White",
+                                                "Unreported"))))))))
+```
+
+```{r}
+raceBinHist <- ggplot(sinfoRaceBin, aes(x = raceBin)) +
+  geom_histogram(stat = "count", color = "#CCCCCC", fill = "#CCCCCC") +
+  #scale_x_discrete(labels = raceLabs) +
+  theme_bw() +
+  labs(x = "Race", y = "Frequency") +
+  theme(axis.text.x=element_text(angle=30,hjust=1,vjust=1)) +
+  ggtitle("Frequency of subjects' self-reported race")
+
+raceBinHist
+```
+
+```{r}
+#subject political affiliation
+politicalHist <- ggplot(subinfo, aes(x = factor(affiliation))) +
+  geom_histogram(stat = "count", color = "#CCCCCC", fill = "#CCCCCC") +
+  scale_x_discrete(labels = affiliationLabs) +
+  theme_bw() +
+  labs(x = "Political Affiliation", y = "Frequency") +
+  theme(axis.text.x=element_text(angle=30,hjust=1,vjust=1)) +
+  ggtitle("Frequency of subjects' self-reported political affiliation")
+
+politicalHist
+```
+
+```{r}
+dfPoliticalBin <- mutate(subinfo, affiliationBin = ifelse(affiliation %in% 0:2,
+                                                                   "Democrat",
+                                                                   ifelse(affiliation == 3,
+                                                                    "Independent",
+                                                                    ifelse(affiliation %in%
+                                                                      4:6, "Republican",
+                                                                      "Unreported"))))
+
+politicalBinHist <- ggplot(mutate(subinfo, affiliationBin = ifelse(affiliation %in% 0:2,
+                                                                   "Democrat",
+                                                                   ifelse(affiliation == 3,
+                                                                    "Independent",
+                                                                    ifelse(affiliation %in%
+                                                                      4:6, "Republican",
+                                                                      "Unreported")))), 
+                           aes(x = factor(affiliationBin))) +
+  geom_histogram(stat = "count", color = c("#00397A", "#CCCCCC", "#B51700", "#000000"), 
+                 fill = c("#00397A", "#CCCCCC", "#B51700", "#000000")) +
+  scale_x_discrete(labels = affiliationBinLabs) +
+  theme_bw() +
+  labs(x = "Political Affiliation", y = "Frequency") +
+  theme(axis.text.x=element_text(angle=30,hjust=1,vjust=1)) +
+  ggtitle("Frequency of subjects' self-reported political affiliation")
+
+politicalBinHist
+```

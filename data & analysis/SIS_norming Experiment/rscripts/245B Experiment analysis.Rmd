@@ -523,3 +523,73 @@ politicalBinHist <- ggplot(mutate(subinfo, affiliationBin = ifelse(affiliation %
 
 politicalBinHist
 ```
+
+#filler analysis? Looking for patterns in the non-critical responses
+```{r}
+dfFiller = read.csv("../data/SIS-trials.csv", header = TRUE) %>%
+  filter(slide_type != "bot_check") %>% 
+  filter(type == "filler")
+
+dfFiller$response <- as.numeric(dfFiller$response) - 28
+
+dfFiller <- dfFiller %>%
+  filter(!(workerid %in% blacklist))
+
+dfFiller$nameCategory <- factor(dfFiller$first %in% blacknames)
+
+dfFiller %>%
+  filter(type != "exclusion") %>%
+  group_by(nameCategory) %>%
+  summarize(n = n())
+
+levels(dfFiller$nameCategory) <- c("white", "black")
+
+dfFiller <- dfFiller %>%
+  rename(stereotype = tag,
+         item = story,
+         name = first)
+
+byStereotypeNameCategoryFiller <- dfFiller %>%
+  group_by(nameCategory, stereotype, item) %>%
+  summarize(Mean = mean(response), 
+            CILow =ci.low(response),
+            CIHigh =ci.high(response)) %>%
+  ungroup() %>%
+  mutate(YMin = Mean - CILow,
+         YMax = Mean + CIHigh)
+
+```
+
+#Low bias
+```{r}
+fillerMeansLow <- ggplot(filter(byStereotypeNameCategoryFiller, stereotype == "filler_lowbias"), aes(x=item, y=Mean, fill = nameCategory)) +
+  geom_hline(yintercept = mean(filter(byStereotypeNameCategoryFiller, stereotype == "filler_lowbias")$Mean), color="gray") +
+  theme_bw() +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=70,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) +  
+  ylim(0, 85) +
+  labs(x = "Presented story", y = "Mean rating", fill = "Race")+
+  ggtitle("Average response by low-biased filler items")
+
+fillerMeansLow
+```
+
+
+#High bias
+```{r}
+fillerMeansHigh <- ggplot(filter(byStereotypeNameCategoryFiller, stereotype == "filler_highbias"), aes(x=item, y=Mean, fill = nameCategory)) +
+  geom_hline(yintercept = mean(filter(byStereotypeNameCategoryFiller, stereotype == "filler_highbias")$Mean), color="gray") +
+  theme_bw() +
+  scale_fill_manual("Race of\nnormed name", values = c("#00397A","#CCCCCC")) +
+  geom_bar(stat="identity",position = "dodge") +
+  theme(axis.text.x=element_text(angle=70,hjust=1,vjust=1)) +
+  geom_errorbar(aes(ymin=YMin,ymax=YMax),size = 0.25,width= 0.025,position = dodge) + 
+  ylim(0, 85) +
+  labs(x = "Presented story", y = "Mean rating", fill = "Race")+
+  ggtitle("Average response by high-biased filler items")
+
+fillerMeansHigh
+```
+

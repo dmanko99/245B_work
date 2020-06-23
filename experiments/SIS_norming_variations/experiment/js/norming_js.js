@@ -232,13 +232,16 @@ function init() {
   exp.currentList = _.shuffle([1,2,3])[0]
 
   // filter criticals by list
-  var listCriticals = criticals.filter(function (stim) {
+  var listCriticals = criticalsM.filter(function (stim) { //for male names
+  //var listCriticals = criticalsF.filter(function (stim) { //for male names
   return stim.list == exp.currentList
   });
 
   // stories are the critical items for the list, plus fillers
   // vacuous call to filter just converts json to javascript object
-  var stories = listCriticals.concat(fillers.filter(function() { return true } ))
+  var stories = listCriticals.concat(fillersM.filter( //for male names
+  // var stories = listCriticals.concat(fillersF.filter( //for female names
+    function() { return true } ))
 
   exp.stories = stories
 

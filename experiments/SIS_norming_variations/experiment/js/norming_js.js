@@ -1,6 +1,37 @@
 function make_slides(f) {
   var   slides = {};
 
+  //setting up the slide stopwatches/timers
+  var h1 = document.getElementsByTagName('h1')[0],
+    start = document.getElementById('start'),
+    stop = document.getElementById('stop'),
+    clear = document.getElementById('clear'),
+    tenths = 0,
+    seconds = 0,
+    minutes = 0,
+    t;
+
+  function add() {
+    tenths++;
+    if (tenths >= 100) {
+      tenths = 0;
+      seconds++;
+      if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+      }
+    }
+
+    h1.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds) + ":" + (tenths > 9 ? tenths : "0" + tenths);
+
+    timer();
+  }
+
+  function timer() {
+    t = setTimeout(add, 10);
+  }
+  timer();
+
   slides.bot = slide({
     name : "bot",
     start: function() {
@@ -134,12 +165,20 @@ function make_slides(f) {
       
       //erase current slider value
       exp.sliderPost = null;
+
+      //reset slide timer
+      h1.textContent = "00:00:00";
+        tenths = 0;
+        seconds = 0;
+        minutes = 0;
+        hours = 0;
     },
 
     button : function() {
       if (exp.sliderPost == null) {
         $(".err").show();
       } else {
+        this.finishTime = Date.now();
         this.log_responses();
 
         /* use _stream.apply(this); if and only if there is
@@ -158,6 +197,7 @@ function make_slides(f) {
       exp.data_trials.push({
         "trial_num": this.trialNum,
         "response" : exp.sliderPost,
+        "seconds_elapsed" : (this.finishTime - this.startTime) / 1000,
         "first": this.stim.first,
         "story": this.stim.story,
         "scale": scales[this.stim.scaleType],

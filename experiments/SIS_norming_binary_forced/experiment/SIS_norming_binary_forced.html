@@ -106,6 +106,8 @@
 
     <p style="text-align:left"> Indicate your rating by selecting either "Most likely false" or "Most likely true". Try to pick one instinctively and answer <i>before the timer in the upper right-hand corner gets to 0</i>.</p>
 
+    <p style="text-align:left"> <b> Please answer within the 10 second window. If you take longer than 10 seconds, the rating buttons will disappear. In the event that this happens, just click <i>continue</i> and move on to the next sentence.</b></p>
+
     <p style="text-align:left"> IMPORTANT: Occasionally you'll be asked to provide ratings for simple math problems. If you pay attention, you'll be sure to get these right (for example, if the math problem is "1 + 1 = 2", your answer needs to be "Most likely true").</p>
 
 
@@ -132,18 +134,24 @@
       <br>
     </p>
     <strong><big><p id="output"></p></big></strong>
-    <table>
-      <label><input type="radio"  name="judgment"
-        value="0"/>Most likely false</label>
-      <th>          </th>
-      <label><input type="radio"  name="judgment" 
-        value="1"/>Most likely true</label>
+    <table align="center">
+      <tr>
+        <td>
+          <label><input type="radio"  id="judgment" name="judgment"
+          value="0"/>Most likely false</label>
+        </td>
+        <td></td>
+        <td>
+          <label><input type="radio" id="judgment" name="judgment" 
+          value="1"/>Most likely true</label>
+        </td>
+      </tr>
     </table>
-    <br>
     <br>
     <button onclick="_s.button()">Continue</button>
     <br></br>
-    <p class="err" style="color:red">Please select an option before continuing.</div>
+    <p class="err1" style="color:red">Please select an option before continuing.</div>
+    <!-- <p class="err2" id="error2" style="color:red">Please answer more quickly next time. Click the continue button now.</div> -->
   </div>
 
   <div class="slide"  id="subj_info">

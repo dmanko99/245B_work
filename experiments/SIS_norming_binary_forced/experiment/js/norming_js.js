@@ -2,40 +2,55 @@ function make_slides(f) {
   var   slides = {};
 
   //setting up the slide stopwatches/timers
+  //var answerTime = 10; //the seconds of time per trial
+
   var h1 = document.getElementsByTagName('h1')[0],
     tenths = 1,
+    //seconds = answerTime,
     seconds = 10,
     minutes = 0,
     t;
 
-    function add() {
-      tenths--;
-      if (tenths <= 0) {
-        if (seconds != 0) {
-          tenths = 99;
-          seconds--;
-          if (seconds < 0) {
-            seconds = 0;
-            minutes--;
-            if (minutes <= 0) {
-              minutes = 0;
-            }
+  function add() {
+    tenths--;
+    if (tenths <= 0) {
+      if (seconds != 0) {
+        tenths = 99;
+        seconds--;
+        if (seconds < 0) {
+          seconds = 0;
+          minutes--;
+          if (minutes <= 0) {
+            minutes = 0;
           }
         }
       }
-
-      if (seconds == 0 && tenths == 0) {
-        h1.textContent = "00:00.00"
-      } else {
-        h1.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds) + "." + (tenths > 9 ? tenths : "0" + tenths);
-
-        timer();
-      }
     }
+
+    if (seconds == 0 && tenths == 0) {
+      h1.textContent = "00:00.00"
+    } else {
+      h1.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds) + "." + (tenths > 9 ? tenths : "0" + tenths);
+
+      timer();
+    }
+  }
+
+  function disappear() {
+    document.getElementsByName('judgment')[0].style.visibility = 'hidden';
+    document.getElementsByName('judgment')[1].style.visibility = 'hidden';
+  }
 
   function timer() {
     t = setTimeout(add, 10);
   }
+
+  var hideQ;
+  function autohide() {
+    hideQ = setTimeout(disappear, (10+1)*1000);
+  }
+
+
   timer();
 
   slides.bot = slide({
@@ -112,11 +127,14 @@ function make_slides(f) {
       var prompt, utt;
       //a bunch of stuff goes here!!!
 
-      // "uncheck" radio buttons
+      // "uncheck" and displayradio buttons
+      document.getElementsByName('judgment')[0].style.visibility = 'visible';
+      document.getElementsByName('judgment')[1].style.visibility = 'visible';
       $('input[name="judgment"]').prop('checked', false);
 
       // hide error message
-      $(".err").hide();
+      $(".err1").hide();
+      $(".err2").hide();
 
       // show "data"
       $(".data").show();
@@ -146,8 +164,10 @@ function make_slides(f) {
       document.getElementById('output').innerHTML = story;
 
       //reset slide timer
-      h1.textContent = "00:10.00";
+      //h1.textContent = concat("00:" + answerTime + ".00");
+      h1.textContent = "00:10.00"
         tenths = 1;
+        //seconds = answerTime;
         seconds = 10;
         minutes = 0;
 
@@ -155,14 +175,20 @@ function make_slides(f) {
       timer();
 
       //put auto-advancing stuff in here
+      clearTimeout(hideQ);
+      autohide();
 
     },
 
     
     button : function() {
-      exp.response = $('input[name="judgment"]:checked').val();
+      if (document.getElementsByName('judgment')[0].style.visibility == 'hidden') {
+        exp.response = "undefined";
+      } else {
+        exp.response = $('input[name="judgment"]:checked').val();
+      }
       if (exp.response == null) {
-        $(".err").show();
+        $(".err1").show();
       } else {
         this.finishTime = Date.now();
         this.log_responses();

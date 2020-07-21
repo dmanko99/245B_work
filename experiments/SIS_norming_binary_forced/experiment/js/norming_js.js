@@ -272,10 +272,9 @@ function init() {
 
   exp.stims = [];
   //var labels = _.shuffle(predicates);
-  //var 
 
   // determine what list to serve to participant
-  exp.currentList = _.shuffle([1,2,3])[0]
+  exp.currentList = _.shuffle([1,2,3])[0];
 
   // filter criticals by list
   var listCriticals = criticalsM.filter(function (stim) { //for male names

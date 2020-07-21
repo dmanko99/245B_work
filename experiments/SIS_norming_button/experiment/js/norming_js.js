@@ -119,10 +119,13 @@ function make_slides(f) {
 
       //display story-dependent fields
       if(stim.stimType != "exclusion") {
+        //to really game-ify it
+        var reveal = "and is the next person behind the curtain!"
+
         //if male
-        document.getElementById('reminder').innerHTML = reminder + " is an American man.";
+        document.getElementById('reminder').innerHTML = reminder + " is an American man " + reveal;
         //if female
-        // document.getElementById('reminder').innerHTML = reminder + " is an American woman.";
+        // document.getElementById('reminder').innerHTML = reminder + " is an American woman " + reveal;
       } else {
         document.getElementById('reminder').innerHTML = "";
       }
@@ -248,12 +251,17 @@ function make_slides(f) {
 
       //display story-dependent fields
       if(stim.stimType != "exclusion") {
+        //to really game-ify it
+        var reveal = "and is the next person behind the curtain!"
+
+        document.getElementById('curtain_picture').style.display = "inline";
         //if male
-        document.getElementById('reminder_main').innerHTML = reminder + " is an American man.";
+        document.getElementById('reminder_main').innerHTML = reminder + " is an American man " + reveal;
         //if female
-        // document.getElementById('reminder_main').innerHTML = reminder_main + " is an American woman.";
+        // document.getElementById('reminder_main').innerHTML = reminder + " is an American woman." + reveal;
       } else {
         document.getElementById('reminder_main').innerHTML = "";
+        document.getElementById('curtain_picture').style.display = "none";
       }
       document.getElementById('output_main').innerHTML = story;
 

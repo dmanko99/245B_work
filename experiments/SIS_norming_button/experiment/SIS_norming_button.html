@@ -133,9 +133,9 @@
 
 		<div class="tut_key_instructions">
 			<br><br>
-			<p2>Place your right index finger on the <strong>J</strong> key and left index finger on the <strong>F</strong> key.<br><br>If you think the answer to the question is <i>most likely true</i>, press <strong>J</strong>, if you think it is <i>most likely false</i>, press <strong>F.</strong><br>Use your thumb to press <strong>SPACE</strong> and don't move your index fingers.</p2>
+			<p2>Place your right index finger on the <strong>J</strong> key and left index finger on the <strong>F</strong> key.<br><br>If you think the answer to the question is <i>most likely true</i>, press <strong>J</strong>, if you think it is <i>most likely false</i>, press <strong>F</strong>.<br>Use your thumb to press <strong>SPACE</strong> and don't move your index fingers.</p2>
 			<br><br>
-			<p2><strong>Remember, after you the question pops up, you only have 8 seconds to respond.</strong></p2>
+			<p2><strong>Remember, after the statement appears, you only have 8 seconds to respond.</strong></p2>
 			<br><br><br>
 			<img src="img/keypress.jpg" alt="keyboard" align="center" style="height:300px">
 			<br><br><br><br>
@@ -147,25 +147,33 @@
 		<br><br><br>
 		<p2>Let's start with a warm-up round.<br>Please make sure that your index fingers are on the <strong>J</strong> and <strong>F</strong> keys.</p2>
 		<br><br>
-		<p2><strong>Remember, after you hear the statement, you have 8 seconds to answer.</strong></p2>
+		<p2><strong>Remember, after the statement appears, you have 8 seconds to answer.</strong></p2>
 		<br><br><br>
 		<p2><strong><big>Press SPACE to start the warm-up round</big></strong></p2>
 	</div>
 
 	<div class="slide" id="practice">
-		<div class = "practiceQ">
+		<div class = "practice_preamble">
 			<br>
 			<p id = "reminder"></p>
 			<img src="img/Curtain_Male.png" alt="male_shadow_behind_curtain" align="center"style="width:300px">
 			<!-- <img src="img/Curtain_Female.png" alt="female_shadow_behind_curtain" align="center"style="width:300px"> -->
 			<br>
 			<p class= "prompt">
-				Would the average American think it is that the statement below is true or false?
+				Would the average American think the following statement is true or false?
 				<br>
 			</p>
+			<br>
+			<p2><strong><big>Press SPACE to see the statement</big></strong></p2>
+			<br>
+			<p class = "key_reminder">
+				<small><i>Remember: press <strong>F</strong> for "most likely false" and <strong>J</strong> for "most likely true" within 8 seconds of seeing the statement!</i></small>
+			</p>
+		</div>
 
+		<div class = "practiceQ">
+			<br><br><br>
 			<strong><big><p id="output"></p></big></strong>
-
 			<audio id="critical_stop">
 				<source src="audio/criticalstop.wav" type="audio/wav">
 				Your browser does not support the audio element.
@@ -208,19 +216,27 @@
 	</div>
 
 	<div class="slide" id="main_task">
-		<div class = "mainQ">
+		<div class = "preamble">
 			<br>
 			<p id = "reminder_main"></p>
 			<img id = "curtain_picture" src="img/Curtain_Male.png" alt="male_shadow_behind_curtain" align="center"style="width:300px">
 			<!-- <img id = "curtain_picture" src="img/Curtain_Female.png" alt="female_shadow_behind_curtain" align="center"style="width:300px"> -->
 			<br>
 			<p class= "prompt">
-				Would the average American think it is that the statement below is true or false?
+				Would the average American think the following statement is true or false?
 				<br>
 			</p>
+			<br>
+			<p2><strong><big>Press SPACE to see the statement</big></strong></p2>
+			<br>
+			<p class = "key_reminder">
+				<small><i>Remember: press <strong>F</strong> for "most likely false" and <strong>J</strong> for "most likely true" within 8 seconds of seeing the statement!</i></small>
+			</p>
+		</div>
 
+		<div class = "mainQ">
+			<br><br><br>
 			<strong><big><p id="output_main"></p></big></strong>
-
 			<audio id="critical_stop">
 				<source src="audio/criticalstop.wav" type="audio/wav">
 				Your browser does not support the audio element.

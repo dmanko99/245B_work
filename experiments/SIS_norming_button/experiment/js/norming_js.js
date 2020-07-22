@@ -102,23 +102,26 @@ function make_slides(f) {
 		name : "practice",
 
 		present: exp.practice, 
+		//present: exp.practices,
 
 		present_handle : function(stim) {                                                         
 			var prompt, utt;
-			exp.practicestartTime = 0;
 			
 			// storing this info in the slide
       this.stim = stim;
+
+      //get index number of practice
+      //this.practiceNum = exp.stimscopy.indexOf(stim);
 
       // record trial start time
       this.practicestartTime = Date.now();
 
       // replace NAME from stimuli
-      var reminder = "Brandon";
+      var reminder = stim.first;
       var story = replaceTerms(this.stim, "storyline")
 
       //display story-dependent fields
-      if(stim.stimType != "exclusion") {
+      //if(stim.stimType != "exclusion") {
         //to really game-ify it
         var reveal = "and is the next person behind the curtain!"
 
@@ -126,45 +129,54 @@ function make_slides(f) {
         document.getElementById('reminder').innerHTML = reminder + " is an American man " + reveal;
         //if female
         // document.getElementById('reminder').innerHTML = reminder + " is an American woman " + reveal;
-      } else {
-        document.getElementById('reminder').innerHTML = "";
-      }
+      // } else {
+      //   document.getElementById('reminder').innerHTML = "";
+      // }
       document.getElementById('output').innerHTML = story;
 
-			$('.practiceQ').show();
+			//displaying start of trial
+			$('.practice_preamble').show();
+			$('.practiceQ').hide();
 			$('.critical_stop').hide();
-			//$('.transition').hide();
 			$('.transitionNo').hide();
 			$('.transitionYes').hide();
 			$('.transition_late_practice').hide();
-			// $('.reminder').show();
-			// $('.prompt').show();
-			// $('.output').show();
-
-			exp.practicestartTime = Date.now();
-
-			function showPractice() {
-				exp.keyCode = "Late";
-					exp.responseTime = Date.now()-exp.practicestartTime;
-					(document.getElementById("critical_stop")).play();
-					console.log("Late: " + exp.responseTime);
-					// $('.reminder').hide();
-					// $('.prompt').hide();
-					// $('.output').hide();
-					$('.practiceQ').hide();
-					//$('.transition').show();
-					$('.transition_late_practice').show();
-			}
-
-			var go_practice = setTimeout(showPractice, 8000);
-			go_practice;
 			
 			document.onkeydown = checkKey;
 
+			//ensuring setTimeout function properly resets
+			var go_practice = 0;
+			clearTimeout(go_practice);
+
 			function checkKey(e) {
 				e = e || window.event;
-				if ((e.keyCode == 70 || e.keyCode == 74)) {
+				if ((e.keyCode == 32) && ($('.practice_preamble').is(":visible"))) {
+
+					$('.practice_preamble').hide();
+					$('.practiceQ').show();
+
+					exp.practicestartTime = 0;
+					exp.practicestartTime = Date.now();
+
+					function showPractice() {
+						if ($('.practiceQ').is(":visible")) {
+							exp.keyCode = "Late";
+							exp.responseTime = Date.now()-exp.practicestartTime;
+							(document.getElementById("critical_stop")).play();
+							console.log("Late: " + exp.responseTime);
+							$('.practiceQ').hide();
+							$('.transition_late_practice').show();
+							clearTimeout(go_practice);
+						}
+					}
+
+					go_practice = setTimeout(showPractice, 8000);
+					go_practice;
+				}
+
+				if ((e.keyCode == 70 || e.keyCode == 74) && ($('.practiceQ').is(":visible"))) {
 					exp.responseTime = Date.now()-exp.practicestartTime;
+					clearTimeout(go_practice);
 					if(e.keyCode == 74) {
 						exp.keyCode = 1;
 						$('.practiceQ').hide();
@@ -175,12 +187,6 @@ function make_slides(f) {
 						$('.practiceQ').hide();
 						$('.transitionNo').show();
 					}
-					//$('.practiceQ').hide();
-					// $('.reminder').hide();
-					// $('.prompt').hide();
-					// $('.output').hide();
-					//$('.transition').show();
-					clearTimeout(go_practice);
 				} 
 
 				if ((($('.transitionYes').is(":visible")) ||
@@ -233,8 +239,6 @@ function make_slides(f) {
 		present_handle : function(stim){
 			var prompt, utt;
 
-			exp.test_start = 0;
-
 			// storing this info in the slide so I can record it later?
       this.stim = stim; 
 
@@ -243,7 +247,6 @@ function make_slides(f) {
 
       // record trial start time
       this.startTime = Date.now();
-
 
       // replace NAME from stimuli
       var reminder = stim.first;
@@ -260,48 +263,60 @@ function make_slides(f) {
         //if female
         // document.getElementById('reminder_main').innerHTML = reminder + " is an American woman." + reveal;
       } else {
-        document.getElementById('reminder_main').innerHTML = "";
+        document.getElementById('reminder_main').innerHTML = "The next statement is a math problem!";
         document.getElementById('curtain_picture').style.display = "none";
       }
       document.getElementById('output_main').innerHTML = story;
 
-      $('.mainQ').show();
+      //displaying start of trial
+      $('.preamble').show();
+      $('.mainQ').hide();
 			$('.critical_stop').hide();
 			$('.transition1').hide();
 			$('.transition_late').hide();
-
-			exp.test_start = Date.now();
-
-      function showTrial() {
-      	exp.keyCode = "Late";
-      	exp.responseTime = Date.now()-exp.test_start;
-      	(document.getElementById("critical_stop")).play();
-      	console.log("Late: " + exp.responseTime);
-      	$('.mainQ').hide();
-      	$('.transition_late').show();
-      }
-
-      var go = setTimeout(showTrial, 8000);
-      go;   	
       
       document.onkeydown = checkKey;
 
+      //ensuring setTimeout function properly resets
+      var go = 0;
+      clearTimeout(go);
+
 			function checkKey(e) {
 				e = e || window.event;
-				if ((e.keyCode == 70 || e.keyCode == 74)) {
+				if ((e.keyCode == 32) && ($('.preamble').is(":visible"))) {
+
+					$('.preamble').hide();
+					$('.mainQ').show();
+
+
+					exp.test_start = 0;
+					exp.test_start = Date.now();
+
+					function showTrial() {
+						if ($('.mainQ').is(":visible")) {
+							exp.keyCode = "Late";
+							exp.responseTime = Date.now()-exp.test_start;
+							(document.getElementById("critical_stop")).play();
+							console.log("Late: " + exp.responseTime);
+							$('.mainQ').hide();
+							$('.transition_late').show();
+							clearTimeout(go);
+						}
+					}
+
+					go = setTimeout(showTrial, 8000);
+					go;
+					
+				}
+				if ((e.keyCode == 70 || e.keyCode == 74) && ($('.mainQ').is(":visible"))) {
 					exp.responseTime = Date.now()-exp.test_start;
 					if(e.keyCode == 74)
 						exp.keyCode = 1;
 					if(e.keyCode == 70)
 						exp.keyCode = 0;   
 					$('.mainQ').hide();
-					//$('.critical_stop').hide();
 					$('.transition1').show();
 					clearTimeout(go);
-					// $('.reminder_main').hide();
-					// $('.prompt').hide();
-					// $('.outpu_main').hide();
-					// $('.transition1').show();
 				} 
 
 				if ((($('.transition1').is(":visible")) || 
@@ -374,8 +389,36 @@ function init() {
 	
 	exp.practice = [
 		{
+			"first":"Brandon",
 			"story":"beard",
 			"storyline":"Brandon has a beard.",
+			"tag":"practice",
+			"scaleType":9,
+			"stimType":"practice",
+			"list":"all"
+		},
+		{
+			"first":"Liam",
+			"story":"parents",
+			"storyline":"Liam talks to his parents every day.",
+			"tag":"practice",
+			"scaleType":9,
+			"stimType":"practice",
+			"list":"all"
+		},
+		{
+			"first":"Stephen",
+			"story":"parents",
+			"storyline":"Stephen's favorite food is pizza.",
+			"tag":"practice",
+			"scaleType":9,
+			"stimType":"practice",
+			"list":"all"
+		},
+		{
+			"first":"James",
+			"story":"parents",
+			"storyline":"James is a terrible singer",
 			"tag":"practice",
 			"scaleType":9,
 			"stimType":"practice",
@@ -430,6 +473,8 @@ function init() {
   exp.stims = exp.stims.concat(exclusions.filter(function() { return true } ))
 
   exp.stims = _.shuffle(exp.stims);
+
+  //exp.practices = _.shuffle(exp.practice);
 
   exp.stimscopy = exp.stims.slice(0);
 

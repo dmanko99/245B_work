@@ -101,8 +101,7 @@ function make_slides(f) {
 	slides.practice = slide({
 		name : "practice",
 
-		present: exp.practice, 
-		//present: exp.practices,
+		present: exp.practice,
 
 		present_handle : function(stim) {                                                         
 			var prompt, utt;
@@ -170,7 +169,7 @@ function make_slides(f) {
 						}
 					}
 
-					go_practice = setTimeout(showPractice, 8000);
+					go_practice = setTimeout(showPractice, 4000);
 					go_practice;
 				}
 
@@ -304,7 +303,7 @@ function make_slides(f) {
 						}
 					}
 
-					go = setTimeout(showTrial, 8000);
+					go = setTimeout(showTrial, 4000);
 					go;
 					
 				}
@@ -418,7 +417,7 @@ function init() {
 		{
 			"first":"James",
 			"story":"parents",
-			"storyline":"James is a terrible singer",
+			"storyline":"James is a terrible singer.",
 			"tag":"practice",
 			"scaleType":9,
 			"stimType":"practice",
@@ -473,8 +472,6 @@ function init() {
   exp.stims = exp.stims.concat(exclusions.filter(function() { return true } ))
 
   exp.stims = _.shuffle(exp.stims);
-
-  //exp.practices = _.shuffle(exp.practice);
 
   exp.stimscopy = exp.stims.slice(0);
 

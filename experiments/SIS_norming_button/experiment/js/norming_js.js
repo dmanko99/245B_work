@@ -339,6 +339,7 @@ function make_slides(f) {
 					"first" : this.stim.first,
 					"story" : this.stim.story,
 					"scale" : scales[this.stim.scaleType],
+					"tag": this.stim.tag,
 					"list" : exp.currentList,
 					"type" : this.stim.stimType
 			});
@@ -348,6 +349,15 @@ function make_slides(f) {
 	slides.subj_info =  slide({
 		name : "subj_info",
 		submit : function(e){
+			var raceData = new Array();
+      var raceQs = document.getElementById("checkboxes");
+      var chks = raceQs.getElementsByTagName("INPUT");
+      for (var i = 0; i < chks.length; i++) {
+        if (chks[i].checked) {
+          raceData.push(chks[i].value);
+        }
+      };
+
 			exp.subj_data = {
 				language : $("#language").val(),
 				enjoyment : $("#enjoyment").val(),
@@ -355,6 +365,8 @@ function make_slides(f) {
 				age : $("#age").val(),
 				gender : $("#gender").val(),
 				education : $("#education").val(),
+				affiliation : $("#affiliation").val(),
+        race : raceData.join(", "),
 				comments : $("#comments").val(),
 				problems: $("#problems").val(),
 				fairprice: $("#fairprice").val()
